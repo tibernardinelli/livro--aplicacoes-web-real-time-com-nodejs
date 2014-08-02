@@ -7,10 +7,12 @@ var express = require('express')
 	, error = require('./middlewares/error')
     , app = express()
     , server = require('http').Server(app)
-    , io = require('socket.io')(server);
-
+    , io = require('socket.io').listen(server);
+	
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+app.set("layout extractScripts", true)
+
 app.use(cookieParser('ntalk'));
 app.use(expressSession());
 app.use(bodyParser.json());
@@ -26,6 +28,7 @@ load('models')
 app.use(error.notFound);
 app.use(error.serverError);
 
+
 io.sockets.on('connection', function(client) {
 	client.on('send-server', function(data) {
 		var msg = 	"<b>" + data.nome + ":</b> " + data.msg + "<br>";
@@ -37,3 +40,4 @@ io.sockets.on('connection', function(client) {
 app.listen(3000, function(){
     console.log("Ntalk no ar.");
 });
+
