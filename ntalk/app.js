@@ -6,12 +6,11 @@ var express = require('express')
 	, methodOverride = require('method-override')
 	, error = require('./middlewares/error')
     , app = express()
-    , server = require('http').Server(app)
-    , io = require('socket.io').listen(server);
+    , server = require('http').createServer(app)
+    , io = require('socket.io')(server);
 	
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.set("layout extractScripts", true)
 
 app.use(cookieParser('ntalk'));
 app.use(expressSession());
@@ -37,7 +36,7 @@ io.sockets.on('connection', function(client) {
 	});
 });
 
-app.listen(3000, function(){
+server.listen(3000, function(){
     console.log("Ntalk no ar.");
 });
 
